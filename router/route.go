@@ -1,17 +1,13 @@
 package router
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
-	"time"
-
 	"github.com/angao/gin-xorm-admin/router/middlewares"
-	"github.com/angao/gin-xorm-admin/router/multitemplate"
 	"github.com/gin-gonic/gin"
-	"path/filepath"
 	"github.com/angao/gin-xorm-admin/controller"
 	"github.com/gin-contrib/sessions"
+	"github.com/angao/gin-xorm-admin/utils"
 )
 
 // Init 路由
@@ -29,10 +25,10 @@ func Init() {
 	router.NoRoute(middlewares.NoRoute)
 
 	router.Static("/public", "public")
-	router.HTMLRender = loadTemplates("views")
+	router.HTMLRender = utils.LoadTemplates("views")
 
 	router.SetFuncMap(template.FuncMap{
-		"formatAsDate": formatDate,
+		"formatAsDate": utils.FormatDate,
 	})
 
 	router.GET("/", func(c *gin.Context) {
@@ -63,36 +59,4 @@ func Init() {
 	}
 
 	router.Run(":3000")
-}
-
-func formatDate(t time.Time) string {
-	year, month, day := t.Date()
-	return fmt.Sprintf("%d-%02d-%02d", year, month, day)
-}
-
-func loadTemplates(templatesDir string) multitemplate.Render {
-	r := multitemplate.New()
-
-	layouts, err := filepath.Glob(templatesDir + "/*.html")
-	if err != nil {
-		panic(err.Error())
-	}
-
-	commons, err := filepath.Glob(templatesDir + "/common/*.html")
-	if err != nil {
-		panic(err.Error())
-	}
-
-	systems, err := filepath.Glob(templatesDir + "/system/**/*.html")
-	if err != nil {
-		panic(err.Error())
-	}
-
-	// Generate our templates map from our layouts/ and includes/ directories
-	for _, layout := range layouts {
-		files := append([]string{layout}, systems...)
-		files = append(files, commons...)
-		r.Add(filepath.Base(layout), template.Must(template.ParseFiles(files...)))
-	}
-	return r
 }
