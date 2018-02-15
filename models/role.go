@@ -1,7 +1,5 @@
 package models
 
-import "time"
-
 // Role 用户角色
 type Role struct {
 	// Id 主键

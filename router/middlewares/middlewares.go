@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/sessions"
-	"strings"
+	"log"
 )
 
 // ErrorHandler is a middleware to handle errors encountered during requests
@@ -28,16 +28,10 @@ func NoRoute(c *gin.Context) {
 // Auth is a middleware to handle the authenticate
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		url := c.Request.URL
-		// 过滤资源文件，登录和退出
-		if strings.HasPrefix(url.String(), "/public") || strings.Index(url.String(), "login") > -1 ||
-			strings.Index(url.String(), "/logout") > -1 {
-			c.Next()
-			return
-		}
 		session := sessions.Default(c)
-		id := session.Get("user_id")
-		if id != nil {
+		id := session.Get("user_id").(int64)
+		log.Printf("id: %#v\n", id)
+		if id > 0 {
 			c.Next()
 			return
 		}

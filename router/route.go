@@ -19,7 +19,6 @@ func Init() {
 
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
-	router.Use(middlewares.Auth())
 	router.Use(middlewares.ErrorHandler)
 
 	router.NoRoute(middlewares.NoRoute)
@@ -31,11 +30,11 @@ func Init() {
 		"formatAsDate": utils.FormatDate,
 	})
 
-	router.GET("/", func(c *gin.Context) {
+	router.GET("/", middlewares.Auth(), func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{})
 	})
 
-	router.GET("/blackboard", func(c *gin.Context) {
+	router.GET("/blackboard", middlewares.Auth(), func(c *gin.Context) {
 		notices := make([]map[string]string, 0)
 		notice := map[string]string{
 			"content": "欢迎使用Admin系统",
@@ -45,15 +44,15 @@ func Init() {
 			"noticeList": notices,
 		})
 	})
-	// 登录认证
+	// login authentication
 	auth := new(controller.AuthController)
 	router.GET("/login", auth.ToLogin)
 	router.POST("/login", auth.Login)
 	router.GET("/logout", auth.Logout)
 
-	// User
+	// user
 	user := new(controller.UserController)
-	userGroup := router.Group("/user")
+	userGroup := router.Group("/user", middlewares.Auth())
 	{
 		userGroup.GET("/info", user.Info)
 	}

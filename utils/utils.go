@@ -6,6 +6,9 @@ import (
 	"github.com/angao/gin-xorm-admin/router/multitemplate"
 	"path/filepath"
 	"html/template"
+	"crypto/md5"
+	"encoding/hex"
+	"bytes"
 )
 
 // FormatDate 格式化时间
@@ -40,4 +43,23 @@ func LoadTemplates(templatesDir string) multitemplate.Render {
 		r.Add(filepath.Base(layout), template.Must(template.ParseFiles(files...)))
 	}
 	return r
+}
+
+// Encrypt is encrypt the data with salt
+func Encrypt(data string, salt string) (string, error) {
+	hash := md5.New()
+	_, err := hash.Write([]byte(salt))
+	if err != nil {
+		return "", err
+	}
+	cipher := hash.Sum(nil)
+
+	buf := new(bytes.Buffer)
+	buf.Write(cipher)
+	buf.WriteString(data)
+	_, err = hash.Write(buf.Bytes())
+	if err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(hash.Sum(nil)), nil
 }

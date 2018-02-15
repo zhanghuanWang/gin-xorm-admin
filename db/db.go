@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/angao/gin-xorm-admin/models"
 	"github.com/go-ini/ini"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/core"
@@ -26,13 +25,13 @@ func init() {
 	url := cfg.Section("mysql").Key("url").Value()
 
 	source := fmt.Sprintf("%s:%s@%s", username, password, url)
-	fmt.Println("---------------------> " + source)
 	X, err = xorm.NewEngine("mysql", source)
 
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	tablePrefix := core.NewPrefixMapper(core.SnakeMapper{}, "sys_")
 	X.SetTableMapper(tablePrefix)
+	X.Ping()
+	X.ShowSQL(true)
 }
