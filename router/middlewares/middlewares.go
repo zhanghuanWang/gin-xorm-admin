@@ -20,9 +20,7 @@ func ErrorHandler(c *gin.Context) {
 
 // NoRoute is a middleware to handle page not found during requests
 func NoRoute(c *gin.Context) {
-	c.HTML(http.StatusNotFound, "404", gin.H{
-		"title": "404",
-	})
+	c.HTML(http.StatusNotFound, "404.html", gin.H{})
 }
 
 // Auth is a middleware to handle the authenticate
