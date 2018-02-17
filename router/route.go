@@ -2,7 +2,6 @@ package router
 
 import (
 	"html/template"
-	"net/http"
 	"github.com/angao/gin-xorm-admin/router/middlewares"
 	"github.com/gin-gonic/gin"
 	"github.com/angao/gin-xorm-admin/controller"
@@ -30,25 +29,15 @@ func Init() {
 		"formatAsDate": utils.FormatDate,
 	})
 
-	router.GET("/", middlewares.Auth(), func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", gin.H{})
-	})
-
-	router.GET("/blackboard", middlewares.Auth(), func(c *gin.Context) {
-		notices := make([]map[string]string, 0)
-		notice := map[string]string{
-			"content": "欢迎使用Admin系统",
-		}
-		notices = append(notices, notice)
-		c.HTML(http.StatusOK, "container.html", gin.H{
-			"noticeList": notices,
-		})
-	})
 	// login authentication
 	auth := new(controller.AuthController)
 	router.GET("/login", auth.ToLogin)
 	router.POST("/login", auth.Login)
 	router.GET("/logout", auth.Logout)
+
+	index := new(controller.IndexController)
+	router.GET("/", middlewares.Auth(), index.Home)
+	router.GET("/blackboard", middlewares.Auth(), index.BlackBoard)
 
 	// user
 	user := new(controller.UserController)

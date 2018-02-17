@@ -8,6 +8,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
+	"github.com/gin-gonic/gin"
 )
 
 // X 全局DB
@@ -33,5 +34,5 @@ func init() {
 	tablePrefix := core.NewPrefixMapper(core.SnakeMapper{}, "sys_")
 	X.SetTableMapper(tablePrefix)
 	X.Ping()
-	X.ShowSQL(true)
+	X.ShowSQL(gin.IsDebugging())
 }

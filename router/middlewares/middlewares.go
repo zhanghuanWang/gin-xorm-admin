@@ -27,9 +27,9 @@ func NoRoute(c *gin.Context) {
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		id := session.Get("user_id").(int64)
-		log.Printf("id: %#v\n", id)
-		if id > 0 {
+		userId := session.Get("user_id")
+		log.Printf("%#v\n", userId)
+		if userId != nil && userId.(int64) > 0 {
 			c.Next()
 			return
 		}
