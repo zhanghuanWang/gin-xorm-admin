@@ -7,7 +7,6 @@ import (
 
 	"github.com/angao/gin-xorm-admin/db"
 	"github.com/angao/gin-xorm-admin/utils"
-	"log"
 )
 
 // AuthController handle auth request
@@ -16,9 +15,7 @@ type AuthController struct {
 
 // ToLogin to login page
 func (AuthController) ToLogin(c *gin.Context) {
-	c.HTML(http.StatusOK, "login.html", gin.H{
-		"title": "Admin",
-	})
+	c.HTML(http.StatusOK, "login.html", gin.H{})
 }
 
 // Login handle login 
@@ -50,11 +47,7 @@ func (AuthController) Login(c *gin.Context) {
 	if user.Password == passwd {
 		session := sessions.Default(c)
 		session.Set("user_id", user.Id)
-		session.Set("username", user.Name)
-		session.Set("user", user)
 		session.Save()
-		userId := session.Get("user_id")
-		log.Printf("%#v\n", userId)
 		c.Redirect(http.StatusMovedPermanently, "/")
 	} else {
 		c.HTML(http.StatusUnauthorized, "login.html", gin.H{
@@ -63,6 +56,7 @@ func (AuthController) Login(c *gin.Context) {
 	}
 }
 
+// Logout is log out system
 func (AuthController) Logout(c *gin.Context) {
 	session := sessions.Default(c)
 	session.Clear()
