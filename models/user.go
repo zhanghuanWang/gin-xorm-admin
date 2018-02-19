@@ -33,3 +33,13 @@ type User struct {
 	// CreateAt 创建时间
 	CreateTime time.Time `xorm:"created 'createtime'"`
 }
+
+// UserRole 用户角色
+type UserRole struct {
+	User `xorm:"extends"`
+	Role `xorm:"extends"`
+}
+
+func (UserRole) TableName() string {
+	return "sys_user"
+}

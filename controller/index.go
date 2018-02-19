@@ -1,6 +1,9 @@
 package controller
 
 import (
+	"github.com/angao/gin-xorm-admin/models"
+	"fmt"
+	"strconv"
 	"github.com/angao/gin-xorm-admin/db"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -15,19 +18,27 @@ type IndexController struct {
 func (IndexController) Home(c *gin.Context) {
 	session := sessions.Default(c)
 	userID, ok := session.Get("user_id").(int64)
-	var username string
-	var userDao db.UserDao
+	var user *models.UserRole
+	var err error
 	if ok {
-		user, err := userDao.Get(userID)
+		var userDao db.UserDao
+		var menuDao db.MenuDao
+		user, err = userDao.GetUserRole(userID)
 		if err != nil {
-			
+			fmt.Printf("%#v\n", err)
 		} else {
-			username = user.Name
+			roleID, _ := strconv.ParseInt(user.RoleId, 10, 64)
+			_, err := menuDao.GetMenuByRoleIds(roleID)
+			if err != nil {
+				fmt.Printf("%#v\n", err)
+				return
+			}
+			c.HTML(http.StatusOK, "index.html", gin.H{
+				"username": user.User.Name,
+				"rolename": user.Role.Name,
+			})
 		}
 	}
-	c.HTML(http.StatusOK, "index.html", gin.H{
-		"username": username,
-	})
 } 
 
 // BlackBoard is handle "/blackboard"

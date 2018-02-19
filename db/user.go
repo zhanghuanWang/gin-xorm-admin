@@ -3,7 +3,6 @@ package db
 import (
 	"github.com/angao/gin-xorm-admin/models"
 	"errors"
-	"log"
 )
 
 // UserDao operate user
@@ -24,16 +23,17 @@ func (UserDao) GetUser(account string) (*models.User, error) {
 }
 
 // Get query user by primary key
-func (UserDao) Get(id int64) (*models.User, error) {
-	user := new(models.User)
-	user.Id = id
-	has, err := X.Table("sys_user").Get(user)
+func (UserDao) GetUserRole(id int64) (*models.UserRole, error) {
+	user := new(models.UserRole)
+	has, err := X.Table("sys_user").Join("INNER", "sys_role", "sys_user.roleid = sys_role.id").Where("sys_user.id = ?", id).Get(user)
+	if err != nil {
+		return nil, err
+	}
 	if err != nil {
 		return nil, err
 	}
 	if !has {
 		return nil, errors.New("user not found")
 	}
-	log.Printf("user: %#v\n", user)
 	return user, nil
 }
