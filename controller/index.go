@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"github.com/angao/gin-xorm-admin/models"
 	"fmt"
 	"strconv"
@@ -43,11 +44,12 @@ func (IndexController) Home(c *gin.Context) {
 
 // BlackBoard is handle "/blackboard"
 func (IndexController) BlackBoard(c *gin.Context) {
-	notices := make([]map[string]string, 0)
-	notice := map[string]string{
-		"content": "欢迎使用Admin系统",
+	var noticeDao db.NoticeDao
+	notices, err := noticeDao.List()
+	if err != nil {
+		log.Printf("BlackBoard: %#v\n", err)
+		return
 	}
-	notices = append(notices, notice)
 	c.HTML(http.StatusOK, "container.html", gin.H{
 		"noticeList": notices,
 	})

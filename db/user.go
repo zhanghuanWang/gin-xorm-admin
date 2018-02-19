@@ -22,13 +22,10 @@ func (UserDao) GetUser(account string) (*models.User, error) {
 	return user, nil
 }
 
-// Get query user by primary key
+// GetUserRole query user by primary key
 func (UserDao) GetUserRole(id int64) (*models.UserRole, error) {
 	user := new(models.UserRole)
 	has, err := X.Table("sys_user").Join("INNER", "sys_role", "sys_user.roleid = sys_role.id").Where("sys_user.id = ?", id).Get(user)
-	if err != nil {
-		return nil, err
-	}
 	if err != nil {
 		return nil, err
 	}

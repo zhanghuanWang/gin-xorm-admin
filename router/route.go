@@ -45,11 +45,11 @@ func Init() {
 	router.GET("/", middlewares.Auth(), index.Home)
 	router.GET("/blackboard", middlewares.Auth(), index.BlackBoard)
 
-	// user
+	// user /mgr/user_info
 	user := new(controller.UserController)
-	userGroup := router.Group("/user", middlewares.Auth())
+	userGroup := router.Group("/mgr", middlewares.Auth())
 	{
-		userGroup.GET("/info", user.Info)
+		userGroup.GET("/user_info", user.Info)
 	}
 
 	router.Run(":3000")

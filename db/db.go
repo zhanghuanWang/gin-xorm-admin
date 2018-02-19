@@ -39,11 +39,6 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
-	err = X.StartFSWatcher()
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	X.Ping()
 	X.ShowSQL(gin.IsDebugging())
