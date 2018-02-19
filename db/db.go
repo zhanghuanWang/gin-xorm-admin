@@ -5,9 +5,10 @@ import (
 	"log"
 
 	"github.com/go-ini/ini"
+	// 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/core"
-	"github.com/go-xorm/xorm"
+	"github.com/xormplus/xorm"
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,6 +34,17 @@ func init() {
 	}
 	tablePrefix := core.NewPrefixMapper(core.SnakeMapper{}, "sys_")
 	X.SetTableMapper(tablePrefix)
+
+	err = X.RegisterSqlMap(xorm.Xml("./db/sql", ".xml"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	
+	err = X.StartFSWatcher()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	X.Ping()
 	X.ShowSQL(gin.IsDebugging())
 }

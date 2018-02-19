@@ -14,13 +14,19 @@ func Init() {
 	router := gin.New()
 
 	store := sessions.NewCookieStore([]byte("--secret--key--"))
+	store.Options(sessions.Options{
+		Path: "/",
+		HttpOnly: false,
+		Secure: false,
+		MaxAge: 3600,
+	})
 	router.Use(sessions.Sessions("session_id", store))
 
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 	router.Use(middlewares.ErrorHandler)
 
-	router.NoRoute(middlewares.NoRoute)
+	router.NoRoute(middlewares.NoRoute) 
 
 	router.Static("/public", "public")
 	router.HTMLRender = utils.LoadTemplates("views")
