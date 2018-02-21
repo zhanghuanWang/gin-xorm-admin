@@ -49,7 +49,9 @@
 <body class="gray-bg">
 <div class="wrapper wrapper-content animated fadeInRight">
     {{ template "content" .}}
-    {{ template "system/user/user_view.html" . }}
+    {{ if .user }}
+        {{ template "system/user/user_view.html" . }}
+    {{ end }}
 </div>
 <script src="/public/js/content.js?v=1.0.0"></script>
 </body>

@@ -33,7 +33,8 @@ func (UserController) Info(c *gin.Context) {
 		return
 	}
 	log.Printf("id = %#v\n", id)
-	c.HTML(http.StatusInternalServerError, "system/user/user_view.html", gin.H{
+	c.HTML(http.StatusInternalServerError, "container.html", gin.H{
 		"error": err,
+		"user": user,
 	})
 }
